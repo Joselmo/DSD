@@ -1,0 +1,16 @@
+\begin{thebibliography}{1}
+
+\bibitem{Brun}
+Yuriy Brun and Nenad Medvidovic.
+\newblock Fault and adversary tolerance as an emergent property of distributed
+  systems' software architectures.
+\newblock In {\em Proceedings of the 2007 Workshop on Engineering Fault
+  Tolerant Systems}, EFTS '07, New York, NY, USA, 2007. ACM.
+
+\bibitem{Gartner}
+Felix~C. G\"{a}rtner.
+\newblock Fundamentals of fault-tolerant distributed computing in asynchronous
+  environments.
+\newblock {\em ACM Comput. Surv.}, 31(1):1--26, March 1999.
+
+\end{thebibliography}

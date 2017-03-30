@@ -1,0 +1,5 @@
+// server.policy
+grant {
+permission java.security.AllPermission;
+};
+

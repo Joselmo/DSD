@@ -1,0 +1,185 @@
+\documentclass{./llncs2e/llncs}
+
+
+
+%----------------------------------------------------------------------------------------
+%	TÍTULO Y DATOS DEL ALUMNO
+%----------------------------------------------------------------------------------------
+
+\title{An\'{a}lisis de la tolerancia de fallos en sistemas distribuidos}
+
+\author{Jose Luis Mart\'{i}nez Ortiz}
+\institute{Universidad de Granada
+\and Escuela T\'{e}cnica Superior de Ingenier\'{i}a Informática y Telecomunicaci\'{o}n}
+
+\date{\normalsize\today} % Incluye la fecha actual
+
+%----------------------------------------------------------------------------------------
+% DOCUMENTO
+%----------------------------------------------------------------------------------------
+\begin{document}
+\maketitle
+\newpage
+
+\begin{abstract}
+Este trabajo consta del del an\'{a}lisis de los fallos y su tolerancia en los Sistemas distribudos, apoyandome en articulos donde destacan documentos como los de ``\textit{Gartner}'' \cite{Gartner},
+aunque tenga ya unos años sigue siendo muy ilustrativo y esclarecedor sobre el tema, definiendo y clasificando distintos tipos de fallos y como de graves pueden ser, que veremos m\'{a}s adelante. Tambi\'{e}n hay otros trabajos más actuales ofreciendo soluciones modernas a este problema cl\'{a}sico de los sistemas distribuidos, como diseños de Arquitecturas Software u otras t\'{e}cnicas. 
+
+\end{abstract}
+
+\section{Introducción}
+\paragraph{
+Los sistemas distribuidos deben contar con una serie de requisitos para que se pueda
+considerar el sistema como un sistema distribuido, es decir, estos requisitos no est\'{a}n adheridos al sistema distribuido por si solo, si no que un sistema distribuido debe 
+satisfacer unas características b\'{a}sicas. Para ello hay que diseñar el software y
+el hardware para que cumplan dichos requisitos, y para esto nos podemos ayudar de diversas 
+t\'{e}cnicas para conseguir sistemas distribuidos.
+Las características u objetivos que debe conseguir un sistema distribuido son:}
+\begin{itemize}
+\item Compartici\'{o}n de recursos.
+\item Sistemas abierto.
+\item Concurrencia.
+\item Escalabilidad.
+\item Tolerancia a fallos.
+\item Transparencia.
+\end{itemize}
+\paragraph{
+Este trabajo se centra sobre la \textbf{Tolerancia a fallos}. El motivo de que la
+tolerancia de fallos sea una característica b\'{a}sica de un sistema distribuido es que
+para este tipo de sistemas la fiabilidad y la ``confianza'' del sistema es primordial 
+para el correcto funcionamiento. Si en un sistema distribuido falla alguna parte de \'{e}l
+por pequeña que sea puede causar el fallo completo del sistema, provocando severos
+daños. Por todo esto el an\'{a}lisis de los fallos de un Sistema Distribuido es tan importante. Aunque el proceso de diseñar un software a la parte de la tolerancia de fallos se suele dejar relegada a un segundo plano o no se le presta tanta atenci\'{o}n como al mantenimiento, acoplamiento de los m\'{o}dulos, etc, debería ser una parte fundamental por las necesidades anteriormente explicadas. 
+}
+
+\paragraph{
+Seg\'{u}n ``\textit{Gartner}'' en su art\'{i}culo que trata en concreto los sistemas as\'{i}ncronos, ya que como comenta este tipo de sistemas son m\'{a}s d\'{e}biles en la tolerancia de fallos con respecto a los sistemas s\'{i}ncronos , un detalle a tener en cuenta a la hora 
+de elegir el modelo del sistema.
+}
+\newpage
+\section{Definici\'{o}n}
+\paragraph{
+Lo primero es definir la nomenclatura que se utiliza normalmente con respecto a los fallos en un sistema, y se define mediante la estad\'{i}stica y de dos formas principalmente, \'{a}mbas no excluyentes entre si. La primera es una probabilidad de que ocurra un determinado tipo de fallo en el sistema, tambi\'{e}n conocido en ingles como ``mean time to failure''. La segunda y no menos importante la diferencia de tiempo entre un fallo que ocurre en el sistema y  un fallo anterior del mismo tipo o componente.
+}
+
+\paragraph{
+La tolerancia de fallos en sistemas se componen de dos partes: dise\~{n}o de los posibles fallos que pueden ocurrir en el sistema y la evaluaci\'{o}n y comprobaci\'{o}n de que el sistema tolera los fallos para los que se ha diseñado. Felix ``\textit{Gartner}'' se centra en el diseño de tolerancia de fallos, no en la fase de evaluación de fallos, dado que en esta fase  realizar los cambios es menos costoso y m\'{a}s r\'{a}pido que en otras fases posteriores. El diseño de la tolerancia de fallos no es f\'{a}cil 
+ya que requiere de una gran experiencia en este \'{a}mbito y una gran visi\'{o} de futuro. Algunos posibles fallos son previsibles, como el paso de datos entre módulos o fallos de tipos de variables por ejemplo, pero no todos los fallos son tan f\'{a}ciles de ver a priori. El desconocimiento o la falta de experiencia del diseñador puede producir una falta de precisión
+en la definición de posibles fallos del sistema y por consecuencia se produce una falta para diseñar una solución a dichos fallos, provocando que la tolerancia a fallos del sistema sea incompleto o bastante deficiente generando de esta forma software de baja calidad.
+}
+
+\paragraph{
+Un tema importante dentro de la tolerancia a fallos es que estamos en un sistema distribuido y no debemos olvidarnos de que la comunici\'{o}n principalmente se realiza mediante mensajes entre los distintos \'{o}dulos del sistema, dichos m\'{o}dulos pueden estar alojados en distintas m\'{a}quinas o no. La forma de comunicaci\'{o}n se tiene que tener muy en cuenta
+para el diseño de la tolerancia de fallos. Las comunicaciones pueden ser tanto enviar como recibir eventos externos o internos se debe abstraer completamente de la red, ya que será la red la encargada de controlar sus fallos, pero a nivel de aplicación, del modelo TCP/IP, debe ser el propio sistema el encargado de dicho control.
+}
+
+\subsection{Modelos de fallos}
+
+\paragraph{
+Un fallo puede terner tiene m\'{u}ltiples interpretaciones, como un defecto al m\'{a}s bajo nivel de abstracci\'{o}n, o consecuencias para el sistema que utiliza dicho software. Un fallo puede causar distintos tipos de error dependiendo del estado del sistema gracias a esto podemos recubrirlos con una capa de protección para que el sistema pueda tolerar dichos fallos. Como ``\textit{Gartner}'' explica en su art\'{i}culo, define principalmente tres tipos de fallos:}
+\begin{enumerate}
+\item \textit{\textbf{crash}: Este tipo de fallo provoca que la unidad de computo deje de funcionar, sin un motivo aparente.}
+\item \textit{\textbf{fail-stop}: Cuando el software local deja de funcionar. Entendemos por software local los m\'{o}dulo acoplados y aquellos de los que depende el m\'{o}dulo afectado.}
+\item \textit{\textbf{fallo-variable}: Se produce un cambio no contemplado en un estado del sistema, que deriva en una situación no deseada.}
+\end{enumerate}
+
+\paragraph{
+Es importante esta clasificación, ya que nos permite identificar mejor la b\'{u}squeda de posibles fallos durante la fase de diseño, que es la m\'{a}s costosa. Aun as\'{i} el fallo de tipo ``crash'' son muy dif\'{i}ciles de detectar, por que es un fallo que no siempre ocurre, si no bajo unas circunstancias muy concretas y es complicado de replicar. Este fallo suele costar mucho tiempo en detectarse cual es su causa produciendo retrasos en el sistema y aumentando los costes del mismo.
+}
+
+\subsection{Tolerancia a fallos}
+\paragraph{
+Una vez que hemos definido que s\'{o}n los fallos y hemos comentado en varias ocasiones la ``tolerancia a los fallos'', pero todav\'{i}a no se hab\'{i}a definido.
+}
+
+\paragraph{
+La \textbf{Tolerancia a fallos} o fault tolerance es la propiedad o habilidad de un sistema software de comportarse de una manera pre-establecida cuando ocurre un fallo.
+}
+
+\paragraph{
+Una vez definido que es la tolerancia a fallos, explicaremos en que consiste. Lo primero durante la fase de diseño del sistema es encontrar y definir los fallos en sus distintas fases, como se explic\'{o} anteriormente. Por \'{u}ltimo Una vez recopilados todos los posibles fallos y localizados hay que listar las posibles soluciones a cada uno de ellos y evaluar si con dicha solución se solventa el fallo o por lo menos se contiene para que no produzca un fallo m\'{a}s grave y problem\'{a}tico.
+}
+\paragraph{
+En los sistemas de software tenemos dos propiedades b\'{a}sicas, y dependiendo del tipo
+concreto de sistema una ser\'{a} m\'{a}s importante que la otra, hablamos de la propiedad de seguridad y disponibilidad. Si una aplicación no esta nunca disponible nadie puede utilizarla pero tambi\'{e}n dejar\'{a}n de utilizar el sistema si esta disponible de forma intermitente impidiendo su correcta utilizaci\'{o}n. Estas propiedades nos pueden ayudar a la hora de clasificar los tipos de tolerancia de fallos que vamos a implementar en el sistema y tener otra forma de evaluar
+la prioridad a la hora de diseñar mecanismos de tolerancia para un determinado fallo u otro.
+Para ello clasificamos las tolerancias a los fallos que hemos detectado. Y suponiendo las propiedades que hemos citado en este p\'{a}rrafo obtenemos cuatro combinaciones o niveles de tolerancia de fallos posibles cuando ocurre un fallo. 
+}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline 
+ & Disponible & No disponible \\ 
+\hline 
+Seguro & enmascarado & fallo seguro \\ 
+\hline 
+No seguro & brecha & nada \\ 
+\hline 
+\end{tabular} 
+\end{center}
+
+\paragraph{
+El tipo \textbf{enmascarado} ocurre cuando un fallo se controla y no produce una brecha en la seguridad del software ni pone en peligro su disponibilidad. Es el mejor tipo posible pero es la soluci\'{o}n que requiere m\'{a}s tiempo y dinero.
+}
+
+\paragraph{
+El tipo \textbf{fallo seguro} protege la seguridad del sistema a costa de la disponibilidad, la cual no se garantiza. Pero evitamos que se puedan producir fallos de seguridad que sean irreparables.
+}
+
+\paragraph{
+El tipo \textbf{brecha} es el peor recubrimiento a un fallo posible, ya que permitimos que el fallo que produzca una brecha en la seguridad del sistema siga activo puesto que se garantiza la disponibilidad del sistema, pudiendo dar lugar a estados indeseables irreversibles y muy peligrosos para algunos sistemas. En alguna situaciones es preferible no recubrir o tolerar este fallo y dejar que el sistema caiga, bloqueando as\'{i} dicha brecha en la seguridad.
+}
+
+\paragraph{
+El ultimo tipo es el ``nada'' y como su propio nombre indica no hay ninguna tolerancia a fallos.
+}
+
+\subsection{Soluciones generales}
+\paragraph{
+Las formas de tolerar un fallo son dos, la duplicidad de los datos o redundancia y las soluciones software. 
+}
+
+\paragraph{
+Una solución es la redundancia y que es la más usada, tanto para los recursos hardware como los recursos software, b\'{a}sicamente consiste en tener un sistema distribuido redundante. Pero ¿qu\'{e} es la Sistema distribuido redundante?  Si tomamos la definici\'{o}n de \cite{Gartner} podemos definirlo como: ``Un programa distribuido $A$ se dice que es redundante en el espacio si para todas las ejecuciones $e$ de $A$ en las que no hay faltas y el conjunto de todas las configuraciones de $A$ contiene configuraciones que no se alcanzan en $e$.'' Otra forma de interpretar esta definici\'{o}n es: se dice que $A$ sea redundante en el tiempo si para todas $e$ ejecuciones de $A$ contiene acciones que nunca se ejecutan en $e$.
+}
+
+\paragraph{
+La otra soluci\'{o} es la recuperaci\'{o}n software, que permite recuperar la falta de informaci\'{o}n o tolerar un fallo mediante la utilizaci\'{o}n de mecanismos softwares.
+Algunos ejemplos de estos mecanismos son, utilizar los invariantes de representaci\'{o}n y poner medidas que obliguen al sistema a no salirse de los invariantes, capturar los errores de forma manual y tratarlo de forma segura y controlada.
+Tambi\'{e}n es cierto que este tipo de soluci\'{o}n es la m\'{a}s compleja ya que requieren de otros mecanismos que revisen la informaci\'{o}n y sepan c\'{o}mo pueden reparar el fallo. En algunos casos esta tarea es imposible puesto que la información para poder ser recuperada mediante software es necesario que incorpore información extra o datos de seguridad para indicar c\'{o}mo recuperar la información. Esta forma tiene las grandes desventajas, como que aumenta la computaci\'{o} en todo el sistema ya que requiere que se an\'{a}lice siempre toda la informac\'{o}n extra para resolver el fallo y adem\'{a} solo funciona con los recursos software, si ocurre un fallo en una unidad de almacenamiento no es posible recuperar el contenido de la unidad. 
+}
+
+\section{Arquitecturas Software}
+\paragraph{
+Tradicionalmente se segu\'{i}an dos corrientes para la tolerancia a los fallos, el soporte global al sistema para resolver la tolerancia o un soporte individual a los m\'{o}dulos.
+Esta tendencia ha ido cambiando con forme se mejoraba la fase de diseño de los sistemas software y aparec\'{i}an nuevas formas de diseñar sofware m\'{a}s din\'{a}micas y r\'{a}pidas que las cl\'{a}sicas. De esta forma en la tolerancia a fallos apareci\'{o} el termino ``\textit{smart redundancy}'' que busca la redundancia de los datos pero de una forma inteligente para que la duplicidad de los datos sea la m\'{i}nima posible y as\'{i} aprovechar mucho mejor los recursos del sistema. Una forma de diseño que ha recogido esta
+idea y muchas otras es la Arquitectura de Software que ha sido desarrollada hace relativamente muy poco y que est\'{a} teniendo una gran acogida por la comunidad de la Ingenier\'{i}a Software. Hoy en d\'{i}a es la base para casi todo el software, incluido el distribuido y esto es debido a las grandes ventajas que nos ofrece.
+}
+
+\paragraph{
+Como se coment\'{o} en la secci\'{o}n anterior las soluciones software son complejas de aplicar y de diseñar pero nos podemos valer de esta herramienta que es muy potente. Tal y como comenta Brun \cite{Brun} en su art\'{i}culo las Arquitecturas Software ya han solucionado algunos problemas de diseño de los sistemas software y de una forma eficiente y consensuada. Es por esto que utilizar arquitecturas que favorezcan, fomenten o premien la tolerancia a los fallos provoca que sea m\'{a}s f\'{a}cil la resoluci\'{o}n de medidas software que hasta hace poco er\'{a}n aunt\'{e}nticos rompecabezas y complejas sus soluciones.
+}
+
+\section{An\'{a}lisis}
+\paragraph{
+En general la tolerancia a los fallos se tiene muy en cuenta en el desarrollo del software en general, pero bien es cierto que en sistemas distribuidos donde un sistema software est\'{a} repartido por diferentes zonas espaciales la comunicaci\'{o}n entre sus componentes es esencial y la forma de garantizar las comunicaciones y el manejo de la informaci\'{o}n deber\'{i}a de ser de las primeras a tener en cuenta.
+}
+
+\paragraph{
+Es curioso como a finales del siglo pasado ya hab\'{i}a preocupaci\'{o}n por los fallos que produc\'{i}an los sistemas y hay una gran cantidad de informaci\'{o}n en esa \'{e}poca. Muchos de esas ideas son la base para los algoritmos actuales o incluso son los mismos mecanismos los que se utilizan para el control de los fallos. En el caso de Felix Gartner en su articulo, en el cual me he basado principalmente, hace una clara y magnifica recopilaci\'{o}n de los mejores art\'{i}culos de la fecha y los muestra junto a su experiencia. 
+La forma de analizar y clasificar los tipos de fallos son fundamentales para poder tratarlos de forma espec\'{i}fica y consiguiendo unas medidas de control muy particulares de otros que requieren otro tipo de medidas obteniendo un resultado m\'{a}s satisfactorio y r\'{a}pido de logra. De esta forma agrupamos los fallos que requieren las mimas medidas y las aplicamos de una sola vez.  
+}
+
+\paragraph{
+Con respecto a las soluciones existe un gran debate entre tener los recursos redundantes o buscar las soluciones mediante software m\'{a}s \'{o}ptimas. Si se elige la redundancia nos aseguramos cierta tolerancia a los fallos, pero quiere un gran desembolso econ\'{o}mico, espacial y personal en comprar nuevos equipos, prepararlo y manterlos funcionando y listo por si ocurre un fallo. O Invertir personal y dinero en la b\'{u}squeda de soluciones software que no garantiza que se encuentren y de ser encontradas, hay que ver su viabilidad en el sistema y funcionamiento. Por ello es un eterno debate que parece que se est\'{a} solucionando de forma h\'{i}brida gracias a los nuevos diseños. La Arquitectura de software est\'{a} reduciendo o calmando las principales desventajas de las soluciones no redundantes pero siguen sin ser efectivas al 100\% y con la computaci\'{o}n distribuida y aumento de componentes gracias a la industria electr\'{o}nica se est\'{a} minimizando el coste de duplicar los recursos hardware. 
+}
+
+\paragraph{
+Como conclusi\'{o}n final considero que es una linea de investigaci\'{o}n donde apenas se ha avanzado mucho y que tiene un largo recorrido por delante. Considero que seguir buscado nuevas formas de tolerancia de fallos software y que compense la falta de un dispositivo hardware  ser\'{i}a un gran avance en este sentido y permitir\'{a} avanzar en gran medida a los sistemas softwares m\'{a}s complejos.
+}
+
+\section{Referencias}
+
+\bibliography{citas} %archivo citas.bib que contiene las entradas 
+\bibliographystyle{plain}
+
+\end{document}
