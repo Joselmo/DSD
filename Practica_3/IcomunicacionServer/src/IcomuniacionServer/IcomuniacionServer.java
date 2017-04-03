@@ -17,12 +17,14 @@ public interface IcomuniacionServer extends Remote {
     /**
      * Obtine el subtotal de una replica
      * @return el total donado en una replica
+     * @throws java.rmi.RemoteException
      */
     public double getSubTotal() throws RemoteException;
     
     /**
      * Obtiene el numero de clientes registrados en una replica
      * @return el total de clientes registrados
+     * @throws java.rmi.RemoteException
      */
     public int getNumRegistros() throws RemoteException;
     
@@ -33,6 +35,14 @@ public interface IcomuniacionServer extends Remote {
      */
     public String getRMIreg() throws RemoteException;
     
+    /**
+     * Indica si el usuario "user" está registrado en el servidor  
+     * @param user nombre del usuario que queremos comprobar
+     * @return true si el usuario está registrado y false en caso contrario
+     * @throws java.rmi.RemoteException
+     */
+    public boolean isRegister(String user) throws RemoteException;
     
     
+    public boolean isDonate(String user) throws RemoteException;
 }
