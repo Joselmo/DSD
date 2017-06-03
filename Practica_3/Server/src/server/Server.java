@@ -24,34 +24,47 @@ import javafx.util.Pair;
 public class Server {
 
     private static double subtotal = 0;
-    private static String server_name = "server0";
+    private static String server_name = "server1";
     // Clave valor que indica en Clave = Nombre de usuario , Valor = Ha pagado
-    private static Map<String, Pair<Boolean,String>> usuarios;
+    private static Map<String, Pair<Boolean, String>> usuarios;
 
-    public static void main(String[] args) {
-        if (System.getSecurityManager() == null) {
-            System.setSecurityManager(new SecurityManager());
-        }
+    public static void main(String[] args) throws MalformedURLException {
+        //  if (System.getSecurityManager() == null) {
+        //      System.setSecurityManager(new SecurityManager());
+        //   }
         try {
-            usuarios = new HashMap<String, Pair<Boolean,String>>();
+            usuarios = new HashMap<String, Pair<Boolean, String>>();
             // Crea una instancia de contador
             String name = "";
             System.out.printf("Inserta numero del server: ");
             Scanner teclado = new Scanner(System.in);
             name = teclado.nextLine();
-            server_name = name;
-            Registry reg = LocateRegistry.createRegistry(1099);
-            ComunicacionServer miComunicadorServer = new ComunicacionServer(server_name,usuarios,subtotal);
-            ComunicacionCliente miComunicadorCliente = 
-                    new ComunicacionCliente(subtotal, miComunicadorServer,server_name,usuarios);
+            server_name = "server" + name;
             
+            Registry reg = null;
+            if(Integer.valueOf(name) == 1){
+               reg = LocateRegistry.createRegistry(1099);
+            }
             
+            ComunicacionServer miComunicadorServer = new ComunicacionServer(server_name,subtotal);
+            
+            ComunicacionCliente miComunicadorCliente = new ComunicacionCliente(Integer.valueOf(name),miComunicadorServer);
+
             // Le damos nombre al servidor 
-            //Naming.rebind(server_name, miComunicadorServer);
             Naming.rebind(server_name, miComunicadorCliente);
-            System.out.println("Servidor "+server_name+" RemoteException | MalformedURLExceptiondor preparado");
+
+            Naming.rebind("s"+server_name, miComunicadorServer);
+
+            if (reg == null) {
+                System.out.println("Servidor esclavo ON");
+
+            }
+
+            System.out.println("Servidor listo...");
+            System.out.println("Servidor " + server_name + " RemoteException | MalformedURLExceptiondor preparado");
         } catch (RemoteException | MalformedURLException e) {
             System.out.println("Exception: " + e.getMessage());
+            System.exit(0);
         }
     }
 

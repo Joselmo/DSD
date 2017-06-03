@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Sensores</title>
+
+
+    </head>
+    <body>
+        <form action="javascript:void(0);" onsubmit="javascript:enviar('temp');">
+            Termostato: <input type="label" id="val1" /><br />
+            <input type="submit" value="Enviar" />
+        </form>
+        Temperatura actual:<span id="resul"></span>
+
+        <br><br><br>
+        <form action="javascript:void(0);" onsubmit="javascript:enviar('luz');">
+            Lumens: <input type="label" id="val2" /><br />
+            <input type="submit" value="Enviar" />
+        </form>
+        Temperatura actual:<span id="resul1"></span>
+    </body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+            var serviceURL = document.URL;
+            // var io = require('socket.io').listen;
+
+            function propagar() {
+                var serviceServerURL = 'http://localhost:8080/';
+                var io = require('socket.io')();
+                var socketServer = io.connect(serviceServerURL);
+
+                console.log("enviar al server datos sensor");
+
+                var d = new Date();
+                if (tipo === 'temp')
+                    socketServer.emit('add_historial', {temp: val1, time: d});
+                else if (tipo === 'luz')
+                    socketServer.emit('add_historial', {luz: val1, time: d});
+            }
+            ;
+
+            function enviar(tipo) {
+                var val1 = document.getElementById("val1").value;
+                var val2 = document.getElementById("val2").value;
+
+                if (tipo === 'temp')
+                    var url = serviceURL + "/" + tipo + "/" + val1;
+                else if (tipo === 'luz')
+                    var url = serviceURL + "/" + tipo + "/" + val2;
+
+
+                var httpRequest = new XMLHttpRequest();
+                httpRequest.onreadystatechange = function () {
+                    if (httpRequest.readyState === 4) {
+                        if (tipo === 'temp')
+                            var resultado = document.getElementById("resul");
+                        else if (tipo === 'luz')
+                            var resultado = document.getElementById("resul1");
+
+                        resultado.innerHTML = httpRequest.responseText;
+                        // Información al sensor menu
+                        /*  var serviceURL = document.URL;
+                         var socket = io.connect(serviceURL);
+                         var d = new Date();
+                         if (tipo === 'temp')
+                         socket.emit('add_historial', {temp: val1, time: d});
+                         else if (tipo === 'luz')
+                         socket.emit('add_historial', {luz: val1, time: d});
+                         */
+                        // información al server
+
+                       // propagar();
+                    }
+                };
+                httpRequest.open("GET", url, true);
+                httpRequest.send(null);
+
+
+            }
+
+
+
+    </script>
+
+
+</html>

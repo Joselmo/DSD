@@ -29,22 +29,22 @@ public class cliente {
         try {
 // Crea el stub para el cliente especificando el nombre del servidor
             Registry mireg = LocateRegistry.getRegistry(host, 1099);
-            icontador micontador = (icontador) mireg.lookup("mmicontador");
+            icontador miServidor = (icontador) mireg.lookup("mmicontador");
 // Pone el contador al valor inicial 0
-            System.out.println("Poniendo contador a 0");
-            micontador.sumar(0);
+            System.out.println("Registrandome en el server");
+        
 // Obtiene hora de comienzo
             long horacomienzo = System.currentTimeMillis();
 // Incrementa 1000 veces
             System.out.println("Incrementando...");
             for (int i = 0; i < 1000; i++) {
-                micontador.incrementar();
+                miServidor.incrementar();
             }
 // Obtiene hora final, realiza e imprime calculos
             long horafin = System.currentTimeMillis();
             System.out.println("Media de las RMI realizadas = " + ((horafin - horacomienzo) / 1000f)
                     + " msegs");
-            System.out.println("RMI realizadas = " + micontador.sumar());
+            System.out.println("RMI realizadas = " + miServidor.sumar());
         } catch (NotBoundException | RemoteException e) {
             System.err.println("Exception del sistema: " + e);
         }

@@ -28,7 +28,7 @@ public interface IcomunicacionCliente extends Remote{
     
     public double getTotal() throws RemoteException;
     
-    public void setDonacion(String user, double cantidad, String concepto) throws RemoteException; 
+    public int setDonacion(String user, double cantidad, String concepto) throws RemoteException; 
     
     
 }

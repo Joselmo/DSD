@@ -8,58 +8,59 @@ package ComunicacionCliente;
 import ComunicacionServer.ComunicacionServer;
 import IcomunicacionCliente.IcomunicacionCliente;
 import java.rmi.RemoteException;
-import java.util.HashMap;
-import java.util.Map;
-import javafx.util.Pair;
+import java.rmi.server.UnicastRemoteObject;
 
 /**
  *
  * @author Jose-laptop
  */
-public class ComunicacionCliente implements IcomunicacionCliente{
-    
-    private double total;
-    private ComunicacionServer conexionServer;
-    private String server_name;
-    private Map<String,Pair<Boolean,String>> usuarios = new HashMap<String,Pair<Boolean,String>>();
-    
-    
-    
-    public ComunicacionCliente(double total, ComunicacionServer conexion,
-            String name,Map<String,Pair<Boolean,String>> usuarios ){
-        this.total = total;
-        conexionServer = conexion;
-        server_name = name;
-        this.usuarios = usuarios;
+public class ComunicacionCliente extends UnicastRemoteObject implements IcomunicacionCliente {
+
+    private int server_num;
+
+    private ComunicacionServer server_stub;
+
+    public ComunicacionCliente() throws RemoteException {
+        server_num = 1;
     }
-    
+
+    public ComunicacionCliente(int name, ComunicacionServer conexion) throws RemoteException {
+        server_num = name;
+        this.server_stub = conexion;
+
+    }
 
     @Override
     public String registro(String user) throws RemoteException {
-        if(conexionServer != null){
-            usuarios.put(user, new Pair<Boolean,String>(false,"concepto"));
-            System.out.println("Nuevo registro: "+user);
-        }
-        return server_name;
+        if(server_stub != null)
+            return server_stub.addRegistro(user);
+        
+        return "";
     }
 
     @Override
     public double getTotal() throws RemoteException {
-      //  if(conexionServer != null)
-          //  total += conexionServer.getSubTotal();
-        
-        return total;
+        double cantidad = 0;
+
+        System.out.println("Conectando con el Stub de sserver" + server_num + " ...");
+        if (server_stub != null) {
+            cantidad = server_stub.getTotal();
+        }
+
+        System.out.println("Recibida respuesta ");
+
+        return cantidad;
     }
 
     @Override
-    public void setDonacion(String user, double cantidad, String concepto) throws RemoteException {
-        if(usuarios.containsKey(user) && cantidad > 0){
-            total += cantidad;
-            usuarios.put(user, new Pair<Boolean,String>(true,"concepto:"+concepto));
-            System.out.println("Nueva donación: "+user+" Cantidad:"+cantidad+" Concepto:"+concepto);
-        }else{
-            System.out.println(user+" intento donar, pero no está registrado");
-        }       
+    public int setDonacion(String user, double cantidad, String concepto) throws RemoteException {
+        if (cantidad <= 0) {
+            System.out.println(user + " intento donar " + cantidad);
+            return 2;
+        }
+
+        return server_stub.setDonacion(user, cantidad, concepto);
+
     }
-    
+
 }

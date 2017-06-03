@@ -1,0 +1,7 @@
+Ejercicio realizado por: Jose Luis Martínez Ortiz.
+
+Instrucciones:
+1º) Iniciar con node.js servidor.js  esperar a que indique "Servicio MongoDB iniciado"
+2º) Abrir en un navegador: localhost:8080
+3º) Interactuar con la web. Los mensajes de los accionadores se muestran como texto
+    en la consola del servidor.

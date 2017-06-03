@@ -14,6 +14,8 @@ import java.rmi.RemoteException;
  */
 public interface IcomuniacionServer extends Remote {
     
+
+    
     /**
      * Obtine el subtotal de una replica
      * @return el total donado en una replica
@@ -45,4 +47,10 @@ public interface IcomuniacionServer extends Remote {
     
     
     public boolean isDonate(String user) throws RemoteException;
+
+    public void registro(String user)throws RemoteException;
+    
+    public int setDonacion(String user, double cantidad, String concepto)throws RemoteException;
+
+    public void addCantidad(double cantidad) throws RemoteException;
 }

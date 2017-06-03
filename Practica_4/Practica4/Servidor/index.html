@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Cliente web</title>
+    </head>
+    <body>
+        <h1>Cliente</h1>
+        Usuario conectado: <div id="resultados"></div>
+
+        <h2>Temperatura</h2>
+        <form action="javascript:void(0);" onsubmit="javascript:enviar('temp');">
+            Termostato: <input type="label" id="val1" />
+            <input type="submit" value="Actualizar" />
+        </form>
+        <p>
+
+        </p>
+        <form action="javascript:void(0);" onsubmit="javascript:ACcontrol();">
+            Termostato: <span id="termostato"></span> <br>
+            Aire Acondicionado: <span id="ac">OFF</span> 
+            <input type="submit" value="On/Off" />
+        </form>
+
+        <h2>Luz</h2>
+        <form action="javascript:void(0);" onsubmit="javascript:enviar('luz');">
+            Lumens: <input type="label" id="val2" />
+            <input type="submit" value="Actualizar" />
+        </form>
+        <p>
+
+        </p>
+        <form action="javascript:void(0);" onsubmit="javascript:PControl();">
+            Luminosidad: <span id="lumens"></span> <br>
+            Persianas: <span id="persiana">Bajada</span>
+            <input type="submit" value="Subir/Bajar" />
+        </form>
+
+        <h2>EXAMEN</h2>
+        <form action="javascript:void(0);" onsubmit="javascript:enviar('humedad');">
+            Humedad: <input type="label" id="val3" />
+            <input type="submit" value="Actualizar" />
+        </form>
+        <p>
+
+        </p>
+        <form action="javascript:void(0);" onsubmit="javascript:LuzControl();">
+            Luces: <span id="interruptor">OFF</span>
+            <input type="submit" value="On/Off" />
+        </form>
+
+
+    </body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+
+
+            var serviceURL = document.URL;
+
+            // Clientes 
+            function actualizarLista(usuarios) {
+                var listContainer = document.getElementById('resultados');
+                listContainer.innerHTML = '';
+                var listElement = document.createElement('ul');
+                listContainer.appendChild(listElement);
+                var num = usuarios.length;
+                //for(var i=0; i<num; i++) {
+                var listItem = document.createElement('li');
+                listItem.innerHTML = JSON.stringify(usuarios[num - 1]);
+                listElement.appendChild(listItem);
+                //}
+            }
+
+            // Sensores
+            function enviar(tipo) {
+                var val1 = 'temp';
+
+                if (tipo === 'temp') {
+                    val1 = document.getElementById("val1").value;
+                } else if (tipo === 'luz') {
+                    val1 = document.getElementById("val2").value;
+                } else if (tipo === 'humedad') {
+                    val1 = document.getElementById("val3").value;
+                }
+                var url = serviceURL + "/" + tipo + "/" + val1;
+
+                var httpRequest = new XMLHttpRequest();
+                httpRequest.onreadystatechange = function () {
+                    if (httpRequest.readyState === 4) {
+                        if (tipo === 'temp')
+                            var resultado = document.getElementById("termostato");
+                        else if (tipo === 'luz')
+                            var resultado = document.getElementById("lumens");
+
+                        resultado.innerHTML = httpRequest.responseText;
+
+                    }
+                };
+                // Información al sensor menu
+
+                var socket = io.connect(serviceURL);
+                var d = new Date();
+                if (tipo === 'temp')
+                    socket.emit('add_historial', {temp: val1, time: d});
+                else if (tipo === 'luz')
+                    socket.emit('add_historial', {luz: val1, time: d});
+                else if (tipo === 'humedad')
+                    socket.emit('add_historial', {humedad: val1, time: d});
+
+                httpRequest.open("GET", url, true);
+                httpRequest.send(null);
+            }
+
+
+            function PControl() {
+                var valor = document.getElementById("persiana").innerHTML;
+                var dato = 'Bajada';
+                console.log("ac: " + valor);
+                if (valor === 'Bajada') {
+                    dato = 'Subida';
+                } else if (valor === 'Subida') {
+                    dato = 'Bajada';
+                }
+
+                var url = serviceURL + "/persiana/" + dato;
+
+                var httpRequest = new XMLHttpRequest();
+                httpRequest.onreadystatechange = function () {
+                    if (httpRequest.readyState === 4) {
+                        var resultado = document.getElementById("persiana");
+                        resultado.innerHTML = httpRequest.responseText;
+
+                    }
+                };
+                httpRequest.open("GET", url, true);
+                httpRequest.send(null);
+            }
+
+            function ACcontrol() {
+                var valor = document.getElementById("ac").innerHTML;
+                var dato = 'OFF';
+                console.log("ac: " + valor);
+                if (valor === 'OFF') {
+                    dato = 'ON';
+                } else if (valor === 'ON') {
+                    dato = 'OFF';
+                }
+
+                var url = serviceURL + "/ac/" + dato;
+
+                var httpRequest = new XMLHttpRequest();
+                httpRequest.onreadystatechange = function () {
+                    if (httpRequest.readyState === 4) {
+                        var resultado = document.getElementById("ac");
+                        resultado.innerHTML = httpRequest.responseText;
+
+                    }
+                };
+                httpRequest.open("GET", url, true);
+                httpRequest.send(null);
+            }
+
+            function LuzControl() {
+                var valor = document.getElementById("interruptor").innerHTML;
+                var dato = 'OFF';
+                console.log("interruptor : " + valor);
+                if (valor === 'OFF') {
+                    dato = 'ON';
+                } else if (valor === 'ON') {
+                    dato = 'OFF';
+                }
+
+                var url = serviceURL + "/interruptor/" + dato;
+
+                var httpRequest = new XMLHttpRequest();
+                httpRequest.onreadystatechange = function () {
+                    if (httpRequest.readyState === 4) {
+                        var resultado = document.getElementById("interruptor");
+                        resultado.innerHTML = httpRequest.responseText;
+
+                    }
+                };
+                httpRequest.open("GET", url, true);
+                httpRequest.send(null);
+            }
+
+
+            function Alertas(code) {
+                var item = 0;
+
+                if (code === 1) {
+                    item = "Temperatura demasiado elevada";
+                } else if (code === 2) {
+                    item = "Luminosidad demasiado baja";
+                } else if (code === 3) {
+                    item = "Luminosidad demasiado Alta";
+                }
+                console.log("alerta:" + code + " = " + item);
+                if (code > 0)
+                    alert(item);
+            }
+
+            var serviceURL = document.URL;
+            console.log("cc:" + serviceURL);
+            var socket = io.connect(serviceURL);
+
+            socket.on('my-address', function (data) {
+                var d = new Date();
+                d = d.toLocaleString();
+                socket.emit('poner', {host: data.host, port: data.port, time: d});
+                socket.emit('obtener', {host: data.address});
+            });
+            socket.on('obtener', function (data) {
+                actualizarLista(data);
+            });
+            socket.on('disconnect', function () {
+                actualizarLista({});
+            });
+
+
+            socket.on('warning_alert', function (code) {
+                Alertas(code);
+            });
+
+
+    </script>
+</html>
+

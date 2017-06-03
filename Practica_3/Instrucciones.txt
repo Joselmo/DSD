@@ -1,0 +1,10 @@
+Práctica realizada por Jose Luis Martínez Ortiz
+-------------------------------------------------
+Instrucciones para ejecutar:
+
+1. Extraer todos los proyectos en una misma carpeta.
+2. Compilar las interfaces, proyectos que empiezan por I
+3. Enlazar el .jar de la interfaces con su proyecto correspondiente.
+4. Cargar el proyecto "server" y ejecutar el fichero "server.java", indicandole número del server.
+	El primer server debe de llamarse 1.
+5. Ejecutar los clientesGUI.

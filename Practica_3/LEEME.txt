@@ -1,0 +1,20 @@
+Autor: Jose Luis Martínez Ortiz
+
+Para el examen he añadido un nuevo método en el stub de la comunicación entre servidores
+para que el servidor maestro pueda recibir una donación y guardarla en su subtotal.
+
+Además he tocado el método de setDonacion para que compruebe si es el maestro o el esclavo.
+En caso de que sea el maestro añade la cantidad donada a total
+En caso de que sea el esclavo manda un mensaje al maestro para que añada la cantidad al total.
+
+El método getTotal se ha modificado para que el maestro solo tenga que enviar su subtotal
+y el esclavo tenga que hacer una petición del total al maestro.
+
+Todo lo modificado ha sido en el stub de comunicación entre servidores llamado: ComunicaciónServer
+En el cliente se podía llamar al server1 o al server2 cambiando un parámetro pero por
+defecto siempre se conectaba al server1 por lo que lo único que he tocado es que dicho parámetro
+no sea modificable.
+
+El balanceo de la carga lo hacian los dos servidores pero como ahora siempre se llama al server1
+por defecto no he tenido que tocar nada, puesto que es el server1 quién siempre balanceará
+la carga.

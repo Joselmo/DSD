@@ -1,0 +1,12 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{julia}\PYG{o}{\PYGZgt{}} \PYG{n}{r} \PYG{o}{=} \PYG{n}{remotecall}\PYG{p}{(}\PYG{n}{rand}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{)}
+\PYG{n}{Future}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{k+kt}{Nullable}\PYG{p}{\PYGZob{}}\PYG{k+kt}{Any}\PYG{p}{\PYGZcb{}())}
+
+\PYG{n}{julia}\PYG{o}{\PYGZgt{}} \PYG{n}{s} \PYG{o}{=} \PYG{n+nd}{@spawnat} \PYG{l+m+mi}{2} \PYG{l+m+mi}{1} \PYG{o}{.+} \PYG{n}{fetch}\PYG{p}{(}\PYG{n}{r}\PYG{p}{)}
+\PYG{n}{Future}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{6}\PYG{p}{,}\PYG{k+kt}{Nullable}\PYG{p}{\PYGZob{}}\PYG{k+kt}{Any}\PYG{p}{\PYGZcb{}())}
+
+\PYG{n}{julia}\PYG{o}{\PYGZgt{}} \PYG{n}{fetch}\PYG{p}{(}\PYG{n}{s}\PYG{p}{)}
+\PYG{l+m+mi}{2}\PYG{n}{x2} \PYG{k+kt}{Array}\PYG{p}{\PYGZob{}}\PYG{k+kt}{Float64}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{\PYGZcb{}}\PYG{o}{:}
+ \PYG{l+m+mf}{1.60401}  \PYG{l+m+mf}{1.50111}
+ \PYG{l+m+mf}{1.17457}  \PYG{l+m+mf}{1.15741}
+\end{Verbatim}
